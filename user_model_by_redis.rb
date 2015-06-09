@@ -9,7 +9,11 @@ class User
   
   # TODO: cookie 持久化 && 多server共享
   # FIXME: 在save之前不应该分配id
+  # TODO: Add before, after filter operations
+  # TODO: mail verify, reference by lamernews
   
+
+  @@EMAIL_REGEX=/^[0-9a-zA-Z\.\-\_\+]+\@[0-9a-zA-Z\.\-]+$/
   attr_reader :id
 
   def initialize(redis_server, new_user = {})
@@ -19,6 +23,10 @@ class User
     else
       @id = -1
     end
+  end
+
+  def is_valid_email?
+    @email =~ @@EMAIL_REGEX && @redis_server.hexists("email.to.id", @email)
   end
 
   def save
